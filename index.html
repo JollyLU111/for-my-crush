@@ -41,66 +41,76 @@
     </div>
 
     <script>
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
-        const question = document.getElementById('question');
-        const gif = document.getElementById('gif');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const question = document.getElementById('question');
+    const gif = document.getElementById('gif');
 
-        let yesSize = 1.1; // Kích thước ban đầu (em)
-        let noSize = 1.1;
+    let yesSize = 1.1; 
+    let noSize = 1.1;
 
-        // Hàm xử lý khi ấn nút KHÔNG
-        noBtn.addEventListener('click', () => {
-            // 1. Nhảy vị trí ngẫu nhiên
-            const x = Math.random() * (window.innerWidth - noBtn.clientWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.clientHeight);
-            
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
-            noBtn.style.transform = 'none'; // Bỏ translate trung tâm để nhảy tự do
+    function moveButton() {
+        // Giới hạn vùng nhảy: Cách mép màn hình ít nhất 50px để không bị mất nút
+        const padding = 50;
+        const maxX = window.innerWidth - noBtn.clientWidth - padding;
+        const maxY = window.innerHeight - noBtn.clientHeight - padding;
+        
+        // Đảm bảo tọa độ không bao giờ nhỏ hơn padding
+        const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+        const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
 
-            // 2. Nút CÓ to dần, nút KHÔNG nhỏ dần
-            yesSize += 0.3;
-            noSize -= 0.1;
-            
-            yesBtn.style.fontSize = yesSize + 'rem';
-            yesBtn.style.padding = (15 * yesSize/1.1) + 'px ' + (30 * yesSize/1.1) + 'px';
-            
-            if (noSize > 0.5) {
-                noBtn.style.fontSize = noSize + 'rem';
-                noBtn.style.padding = (15 * noSize/1.1) + 'px ' + (30 * noSize/1.1) + 'px';
-            } else {
-                noBtn.style.opacity = '0.5'; // Nhỏ quá thì mờ dần
-            }
+        noBtn.style.position = 'fixed'; // Dùng fixed để nó luôn tính theo khung hình
+        noBtn.style.left = randomX + 'px';
+        noBtn.style.top = randomY + 'px';
+        noBtn.style.transform = 'none'; 
+    }
+
+    noBtn.addEventListener('click', () => {
+        moveButton();
+
+        // Nút CÓ to dần, nút KHÔNG nhỏ dần
+        yesSize += 0.4; // Tăng độ to cho nhanh kịch tính
+        noSize -= 0.15;
+        
+        yesBtn.style.fontSize = yesSize + 'rem';
+        // Tăng padding để nút CÓ phình ra to hơn nữa
+        yesBtn.style.padding = (15 * yesSize) + 'px ' + (30 * yesSize) + 'px';
+        
+        if (noSize > 0.3) {
+            noBtn.style.fontSize = noSize + 'rem';
+            noBtn.style.padding = (10 * noSize) + 'px ' + (20 * noSize) + 'px';
+        } else {
+            noBtn.style.display = 'none'; // Nhỏ quá thì cho biến mất luôn, bắt buộc ấn CÓ
+        }
+    });
+
+    yesBtn.addEventListener('click', () => {
+        question.innerHTML = "Tớ biết ngay mà! Love youuu ❤️";
+        gif.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueXF4eXF4eXF4&ep=v1_gifs_search&rid=giphy.gif";
+        noBtn.style.display = 'none';
+
+        // Bắn pháo hoa
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
         });
-
-        // Hàm xử lý khi ấn nút CÓ
-        yesBtn.addEventListener('click', () => {
-            question.innerHTML = "Tớ biết ngay mà! Love youuu ❤️";
-            gif.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueXF4eXF4eXF4&ep=v1_gifs_search&rid=giphy.gif";
-            noBtn.style.display = 'none';
-
-            // 3. Bắn pháo hoa tung tóe
-            var duration = 5 * 1000;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-            function randomInRange(min, max) {
-              return Math.random() * (max - min) + min;
-            }
-
-            var interval = setInterval(function() {
-              var timeLeft = animationEnd - Date.now();
-
-              if (timeLeft <= 0) {
-                return clearInterval(interval);
-              }
-
-              var particleCount = 50 * (timeLeft / duration);
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
-        });
-    </script>
+        
+        // Bắn thêm đợt nữa cho rực rỡ
+        setTimeout(() => {
+            confetti({
+                particleCount: 100,
+                spread: 100,
+                origin: { x: 0.3, y: 0.5 }
+            });
+            confetti({
+                particleCount: 100,
+                spread: 100,
+                origin: { x: 0.7, y: 0.5 }
+            });
+        }, 300);
+    });
+</script>
 </body>
 </html>
+
