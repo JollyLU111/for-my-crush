@@ -4,32 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gửi Crush</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #ffe6e6;
-            font-family: sans-serif;
-            overflow: hidden;
+            margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center;
+            background-color: #ffe6e6; font-family: sans-serif; overflow: hidden;
         }
-        .container { text-align: center; position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #gif { width: 200px; margin-bottom: 20px; }
-        h1 { color: #d63384; font-size: 2rem; }
-        .button-group { position: relative; width: 300px; height: 100px; margin-top: 20px; }
+        .container { text-align: center; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #gif { width: 200px; margin-bottom: 20px; transition: 0.3s; }
+        h1 { color: #d63384; font-size: 2rem; padding: 0 20px; }
+        .button-group { position: relative; width: 100%; height: 200px; margin-top: 20px; }
         .btn {
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            position: absolute; /* Rất quan trọng */
-            transition: all 0.1s ease;
+            padding: 15px 30px; font-size: 1.1rem; border: none; border-radius: 50px;
+            cursor: pointer; position: absolute; transition: all 0.2s ease;
+            white-space: nowrap;
         }
-        #yesBtn { background-color: #ff4d6d; color: white; left: 20px; }
-        #noBtn { background-color: #6c757d; color: white; right: 20px; }
+        #yesBtn { 
+            background-color: #ff4d6d; color: white; 
+            left: 50%; top: 50%; transform: translate(-120%, -50%); 
+            z-index: 100;
+        }
+        #noBtn { 
+            background-color: #6c757d; color: white; 
+            left: 50%; top: 50%; transform: translate(20%, -50%); 
+        }
     </style>
 </head>
 <body>
@@ -48,25 +46,60 @@
         const question = document.getElementById('question');
         const gif = document.getElementById('gif');
 
-        // Nút Không nhảy khi di chuột (cho máy tính)
-        noBtn.addEventListener('mouseover', moveButton);
-        // Nút Không nhảy khi chạm (cho điện thoại)
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            moveButton();
-        });
+        let yesSize = 1.1; // Kích thước ban đầu (em)
+        let noSize = 1.1;
 
-        function moveButton() {
+        // Hàm xử lý khi ấn nút KHÔNG
+        noBtn.addEventListener('click', () => {
+            // 1. Nhảy vị trí ngẫu nhiên
             const x = Math.random() * (window.innerWidth - noBtn.clientWidth);
             const y = Math.random() * (window.innerHeight - noBtn.clientHeight);
+            
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
-        }
+            noBtn.style.transform = 'none'; // Bỏ translate trung tâm để nhảy tự do
 
+            // 2. Nút CÓ to dần, nút KHÔNG nhỏ dần
+            yesSize += 0.3;
+            noSize -= 0.1;
+            
+            yesBtn.style.fontSize = yesSize + 'rem';
+            yesBtn.style.padding = (15 * yesSize/1.1) + 'px ' + (30 * yesSize/1.1) + 'px';
+            
+            if (noSize > 0.5) {
+                noBtn.style.fontSize = noSize + 'rem';
+                noBtn.style.padding = (15 * noSize/1.1) + 'px ' + (30 * noSize/1.1) + 'px';
+            } else {
+                noBtn.style.opacity = '0.5'; // Nhỏ quá thì mờ dần
+            }
+        });
+
+        // Hàm xử lý khi ấn nút CÓ
         yesBtn.addEventListener('click', () => {
             question.innerHTML = "Tớ biết ngay mà! Love youuu ❤️";
             gif.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueXF4eXF4eXF4&ep=v1_gifs_search&rid=giphy.gif";
             noBtn.style.display = 'none';
+
+            // 3. Bắn pháo hoa tung tóe
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              var particleCount = 50 * (timeLeft / duration);
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
         });
     </script>
 </body>
