@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <script>
+<script>
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
     const question = document.getElementById('question');
@@ -48,18 +48,28 @@
 
     let yesSize = 1.1; 
     let noSize = 1.1;
+    let clickCount = 0;
+
+    // Danh sách các câu nói khi bấm "Không"
+    const messages = [
+        "Cậu chắc chưa?? 🤨",
+        "Suy nghĩ kỹ lại đi mà... 🥺",
+        "Tớ buồn lắm đó nha! 💔",
+        "Cho cậu một cơ hội nữa đấy 😤",
+        "Ơ kìa, sao lại bấm vào đây? 😢",
+        "Nút 'Có' to thế kia màaaaa",
+        "Thôi mà, đồng ý đi mà... 🙏"
+    ];
 
     function moveButton() {
-        // Giới hạn vùng nhảy: Cách mép màn hình ít nhất 50px để không bị mất nút
         const padding = 50;
         const maxX = window.innerWidth - noBtn.clientWidth - padding;
         const maxY = window.innerHeight - noBtn.clientHeight - padding;
         
-        // Đảm bảo tọa độ không bao giờ nhỏ hơn padding
         const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
         const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
 
-        noBtn.style.position = 'fixed'; // Dùng fixed để nó luôn tính theo khung hình
+        noBtn.style.position = 'fixed';
         noBtn.style.left = randomX + 'px';
         noBtn.style.top = randomY + 'px';
         noBtn.style.transform = 'none'; 
@@ -68,50 +78,42 @@
     noBtn.addEventListener('click', () => {
         moveButton();
 
-        // Nút CÓ to dần, nút KHÔNG nhỏ dần
-        yesSize += 0.4; // Tăng độ to cho nhanh kịch tính
+        // 1. Thay đổi dòng chữ ngẫu nhiên hoặc theo thứ tự
+        question.innerHTML = messages[clickCount % messages.length];
+        clickCount++;
+
+        // 2. Nút CÓ to dần, nút KHÔNG nhỏ dần
+        yesSize += 0.4;
         noSize -= 0.15;
         
         yesBtn.style.fontSize = yesSize + 'rem';
-        // Tăng padding để nút CÓ phình ra to hơn nữa
         yesBtn.style.padding = (15 * yesSize) + 'px ' + (30 * yesSize) + 'px';
         
         if (noSize > 0.3) {
             noBtn.style.fontSize = noSize + 'rem';
             noBtn.style.padding = (10 * noSize) + 'px ' + (20 * noSize) + 'px';
         } else {
-            noBtn.style.display = 'none'; // Nhỏ quá thì cho biến mất luôn, bắt buộc ấn CÓ
+            noBtn.style.display = 'none'; // Nhỏ quá thì bắt buộc ấn CÓ
+            question.innerHTML = "Hết đường lui rồi nhé! 😎";
         }
     });
 
     yesBtn.addEventListener('click', () => {
         question.innerHTML = "Tớ biết ngay mà! Love youuu ❤️";
-        gif.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueXF4eXF4eXF4&ep=v1_gifs_search&rid=giphy.gif";
+        // Link ảnh GIF mới (ổn định hơn)
+        gif.src = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHJueGZueXF4eXF4eXF4&ep=v1_gifs_search&rid=giphy.gif&ct=g";
         noBtn.style.display = 'none';
 
-        // Bắn pháo hoa
+        // Pháo hoa
         confetti({
             particleCount: 150,
             spread: 70,
             origin: { y: 0.6 }
         });
-        
-        // Bắn thêm đợt nữa cho rực rỡ
-        setTimeout(() => {
-            confetti({
-                particleCount: 100,
-                spread: 100,
-                origin: { x: 0.3, y: 0.5 }
-            });
-            confetti({
-                particleCount: 100,
-                spread: 100,
-                origin: { x: 0.7, y: 0.5 }
-            });
-        }, 300);
     });
 </script>
 </body>
 </html>
+
 
 
