@@ -4,22 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gửi Crush</title>
-    <link rel="stylesheet" href="style/style.css">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffe6e6;
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+        .container { text-align: center; }
+        #gif { width: 200px; }
+        h1 { color: #d63384; }
+        .btn {
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 10px;
+        }
+        #yesBtn { background-color: #ff4d6d; color: white; }
+        #noBtn { 
+            background-color: #6c757d; 
+            color: white; 
+            position: absolute; /* BẮT BUỘC có để nút nhảy được */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <img id="gif" src="https://i.pinimg.com/originals/01/df/7f/01df7f2337097617c8e34c15802b077f.gif" alt="Cute GIF">
+        <img id="gif" src="https://i.pinimg.com/originals/01/df/7f/01df7f2337097617c8e34c15802b077f.gif">
         <h1 id="question">Cậu có thích tôi không ??</h1>
-
         <div class="button-group">
             <button id="yesBtn" class="btn">Có</button>
             <button id="noBtn" class="btn">Không</button>
         </div>
     </div>
 
-    <audio id="music-huh" src="sound/Huh02.mp3"></audio>
-    <audio id="music-love" src="sound/love.mp3"></audio>
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const question = document.getElementById('question');
+        const gif = document.getElementById('gif');
 
-    <script src="style/script.js"></script>
+        // Logic nút Không chạy trốn
+        noBtn.addEventListener('mouseover', () => {
+            const x = Math.floor(Math.random() * (window.innerWidth - noBtn.clientWidth));
+            const y = Math.floor(Math.random() * (window.innerHeight - noBtn.clientHeight));
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        });
+
+        // Logic khi nhấn nút Có
+        yesBtn.addEventListener('click', () => {
+            question.innerHTML = "Tớ biết mà! Love youuu ❤️";
+            gif.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueXF4eXF4eXF4&ep=v1_gifs_search&rid=giphy.gif";
+            noBtn.style.display = 'none';
+        });
+    </script>
 </body>
 </html>
